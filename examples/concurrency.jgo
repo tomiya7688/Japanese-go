@@ -4,12 +4,12 @@
 読み込む "fmt"
 
 関数 送る(宛先 チャネル<- string) {
-	後で close(宛先)
+	関数の終わりに close(宛先)
 	宛先 <- "別のgoroutineからこんにちは"
 }
 
 関数 main() {
-	後で fmt.Println("受信を終了")
+	関数の終わりに fmt.Println("受信を終了")
 	受信箱 := make(チャネル string)
 	行け 送る(受信箱)
 
