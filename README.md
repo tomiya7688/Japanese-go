@@ -6,7 +6,7 @@
 
 Goの型システム・標準ライブラリ・ランタイム・ビルドの仕組みはそのまま。自然な日本語の制御構文をGoへ変換するための言語仕様を定義していきます。[Japanese-Python](https://github.com/tomiya7688/Japanese-Python)と同じく、先に仕様を決め、実装はその後で行います。
 
-**[基本文法 v0.2（仮決定）](spec/JGo-v0.2-draft.md)** / [自然な日本語の例](examples/natural-syntax.jgo) / [v0.1の草案](spec/JGo-v0.1-draft.md)
+**[基本文法 v0.2（仮決定）](spec/JGo-v0.2-draft.md)** / [制御構文の例](examples/natural-syntax.jgo) / [並行処理の例](examples/natural-concurrency.jgo) / [v0.1の草案](spec/JGo-v0.1-draft.md)
 
 ## こう書きたい
 
