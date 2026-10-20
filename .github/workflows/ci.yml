@@ -1,0 +1,44 @@
+name: Documentation and data validation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate UTF-8 Markdown and JSON files
+        run: |
+          python3 - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          failures = []
+          checked = 0
+          for path in Path(".").rglob("*"):
+              if not path.is_file() or any(part in {".git", "node_modules", ".venv"} for part in path.parts):
+                  continue
+              if path.suffix.lower() not in {".md", ".json"}:
+                  continue
+              try:
+                  content = path.read_text(encoding="utf-8-sig")
+                  if "\x00" in content:
+                      raise ValueError("contains a NUL byte")
+                  if path.suffix.lower() == ".json":
+                      json.loads(content)
+                  checked += 1
+              except (UnicodeError, ValueError) as exc:
+                  failures.append(f"{path}: {exc}")
+
+          print(f"Validated {checked} Markdown/JSON files")
+          if failures:
+              print("\n".join(failures), file=sys.stderr)
+              sys.exit(1)
+          PY
