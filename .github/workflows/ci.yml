@@ -1,4 +1,4 @@
-name: Documentation and data validation
+name: CI
 
 on:
   push:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  docs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -42,3 +42,29 @@ jobs:
               print("\n".join(failures), file=sys.stderr)
               sys.exit(1)
           PY
+
+  go:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache: false
+      - name: Test
+        run: go test ./...
+      - name: Vet
+        run: go vet ./...
+      - name: Build jgo
+        run: go build -o /tmp/jgo ./cmd/jgo
+      - name: Compile and run natural syntax example
+        run: |
+          /tmp/jgo compile examples/natural-syntax.jgo -o /tmp/natural-syntax.go
+          go run /tmp/natural-syntax.go
+      - name: Run concurrency example through jgo
+        run: /tmp/jgo run examples/natural-concurrency.jgo
+      - name: Build native binary through jgo
+        run: |
+          /tmp/jgo build examples/natural-syntax.jgo -o /tmp/natural-syntax
+          /tmp/natural-syntax
